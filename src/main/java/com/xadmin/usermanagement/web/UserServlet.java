@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.xadmin.usermanagement.baen.User;
 import com.xadmin.usermanagement.dao.UserDao;
 
-@WebServlet("/")
+@WebServlet("/UserManagement")
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private UserDao userDAO;
@@ -59,7 +59,7 @@ public class UserServlet extends HttpServlet {
 	}	
 	
 	private void userList(HttpServletRequest req, HttpServletResponse rep) 
-			throws SQLException, ServletException, IOException  {
+			throws SQLException, IOException, ServletException  {
 			List<User> userList = userDAO.selectAllUsers();
 			req.setAttribute("userList", userList);
 			RequestDispatcher dispatcher = req.getRequestDispatcher("user-list.jsp");
@@ -82,33 +82,31 @@ public class UserServlet extends HttpServlet {
 	}
 	
 	private void insertUser(HttpServletRequest req, HttpServletResponse rep)
-	throws SQLException, ServletException, IOException{
+	throws SQLException, IOException{
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
 		String country = req.getParameter("country");
 		
-		User user = new User(name,email,country);
-		userDAO.insertUser(user);
+		User newUser = new User(name,email,country);
+		userDAO.insertUser(newUser);
 		rep.sendRedirect("List");	
 	}
 	private void updateUser(HttpServletRequest req, HttpServletResponse rep)
-			throws SQLException, ServletException, IOException {
+			throws SQLException, IOException {
 		
 		int id = Integer.parseInt(req.getParameter("id"));
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
 		String country = req.getParameter("country");
-		
-		User user = new User(name,email,country);
+		User user = new User(id, name,email,country);
 		userDAO.updateUser(user);
 		rep.sendRedirect("List");
 	}
 	
 	private void deleteUser(HttpServletRequest req, HttpServletResponse rep)
-	throws SQLException, ServletException, IOException {
+	throws SQLException, IOException {
 		
 		int id = Integer.parseInt(req.getParameter("id"));
-		
 		User user = new User(id);		
 		userDAO.deleteUser(user);
 		rep.sendRedirect("List");
